@@ -1,0 +1,163 @@
+<html>
+
+<head>
+	<script src="libs/three.js"></script>
+	<script src="loaders/OBJLoader.js"></script>
+	<script src="loaders/OBJMTLLoader.js"></script>
+	<script src="loaders/DDSLoader.js"></script>
+	<script src="loaders/MTLLoader.js"></script>
+</head>
+
+<body>
+
+<script>
+	var renderer;
+	var scene;
+	var camera;
+	var plane;
+
+	var sides;
+
+	var objects = [];
+	var PieceList = [null,null,null,null,null,null,null,null,
+					 null,null,null,null,null,null,null,null,
+					 null,null,null,null,null,null,null,null,
+					 null,null,null,null,null,null,null,null];
+
+	function init()
+	{
+		scene = new THREE.Scene();
+
+		camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 3000 );
+		camera.position.x = 100;
+		camera.position.y = 100;
+		camera.position.z = 600;
+		//camera.rotation. = -30;
+		//camera.lookAt( scene.position );
+
+		renderer = new THREE.WebGLRenderer();
+		renderer.setClearColor( 0x000000, 1.0 );
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		renderer.shadowMap.enabled = true;
+
+		var ambientLight = new THREE.AmbientLight(0xffffff);
+		scene.add(ambientLight);
+
+
+		createGameBoard();
+		//loadPieces();
+
+        // add spotlight for the shadows
+        var spotLight = new THREE.SpotLight( 0xffffff );
+        spotLight.position.set( 0, 0, 500 );
+        spotLight.shadowCameraNear = 20;
+        spotLight.shadowCameraFar = 1500;
+        spotLight.castShadow = true;
+        scene.add(spotLight);
+
+		plane = new THREE.Mesh(new THREE.PlaneBufferGeometry(24*8, 24*8), new THREE.MeshBasicMaterial({transparent: true, color: 0xffffff,opacity: 0.01}));
+		plane.position.z = .1;
+		scene.add( plane );
+
+		document.body.appendChild( renderer.domElement );
+
+		renderer.domElement.addEventListener( 'mousemove', onDocumentMouseMove, false );
+		renderer.domElement.addEventListener( 'mousedown', onDocumentMouseDown, false );
+		renderer.domElement.addEventListener( 'mouseup', onDocumentMouseUp, false );
+
+		render();
+	}
+
+	var Colors = ['green','red', 'blue', 'yellow'];
+	var tiles = [];
+	function createGameBoard()
+	{
+		var squareWidth = 24, squareHeight = 24;
+
+		var squareGeo = new THREE.BoxGeometry(squareWidth, squareHeight, 3);
+
+		for(var i = 0; i < 16; i++)
+		{
+			var squareMat = new THREE.MeshLambertMaterial({color: 'white'});
+			for(var j = 0; j < 16; j++)
+			{
+				var board = new THREE.Mesh(squareGeo, squareMat);
+				board.position.x = -(squareWidth * 3.5) + i * squareWidth;
+				board.position.y = -(squareHeight * 3.5) + j * squareHeight;
+				tiles.push(board);
+				scene.add(board);
+				console.log("Adding new block.\n");
+			}
+		}
+
+
+	}
+
+	var piecesLoaded = false;
+	function waitForPiecesToLoad()
+	{
+	}
+
+	function placePieces()
+	{
+
+	}
+
+	//var PiecesToLoad = ['rook','knight','t','king','queen','t','knight','rook'];
+	var gamepiece = ['piece', 'piece', 'piece', 'piece'];
+	function loadPieces()
+	{
+		loadPiece('GamePieceTempobj', '', 0);
+		//loadPiece('GamePieceTempobj', 'w', 0);
+	}
+
+	function loadPiece(modelname,white,index)
+	{
+		// instantiate a loader
+		var loader = new THREE.OBJMTLLoader();
+		// load an obj / mtl resource pair
+		loader.load('models/GamePieceTempobj.obj', 'models/GamePieceTempobj.mtl',
+			// Function when both resources are loaded			// Function when both resources are loaded
+			function ( object )
+			{
+				// Added to fix raycasting
+				object.castShadow = true;
+				object.receiveShadow = true;
+				object.scale.set( .4, .4, .4 );
+
+				var obj = new THREE.Object3D();
+				obj.name = 'Piece';
+				object.parent = obj;
+				obj.add( object );
+				objects.push( obj );
+				PieceList[index] = obj;//ect;
+			}
+		);
+	}
+
+	function render()
+	{
+		//camera.rotation.x += .05;
+		requestAnimationFrame( render );
+		renderer.render( scene, camera );
+	}
+
+	function onDocumentMouseMove( event )
+	{
+	}
+
+	var r, g, b;
+	function onDocumentMouseDown( event )
+	{
+	}
+
+	function onDocumentMouseUp( event )
+	{
+	}
+
+	window.onload = init;
+</script>
+
+</body>
+
+</html>

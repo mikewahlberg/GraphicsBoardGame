@@ -1,0 +1,107 @@
+<html>
+
+<head>
+	<script src="libs/three.js"></script>
+	<script src="loaders/OBJLoader.js"></script>
+	<script src="loaders/OBJMTLLoader.js"></script>
+	<script src="loaders/DDSLoader.js"></script>
+	<script src="loaders/MTLLoader.js"></script>
+</head>
+
+<body>
+
+<script>
+	var renderer;
+	var scene;
+	var camera;
+	var plane;
+
+	var sides
+
+	function init()
+	{
+		scene = new THREE.Scene();
+
+		camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 3000 );
+		camera.position.x = 0;
+		camera.position.y = 0;
+		camera.position.z = 300;
+		camera.lookAt( scene.position );
+
+		renderer = new THREE.WebGLRenderer();
+		renderer.setClearColor( 0x000000, 1.0 );
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		renderer.shadowMap.enabled = true;
+
+		createChessBoard();
+		loadPieces();
+
+        // add spotlight for the shadows
+        var spotLight = new THREE.SpotLight( 0xffffff );
+        spotLight.position.set( 0, 0, 500 );
+        spotLight.shadowCameraNear = 20;
+        spotLight.shadowCameraFar = 1500;
+        spotLight.castShadow = true;
+        scene.add(spotLight);
+
+		plane = new THREE.Mesh(new THREE.PlaneBufferGeometry(24*8, 24*8), new THREE.MeshBasicMaterial({transparent: true, color: 0xffffff,opacity: 0.01}));
+		plane.position.z = .1;
+		scene.add( plane );
+
+		document.body.appendChild( renderer.domElement );
+
+		renderer.domElement.addEventListener( 'mousemove', onDocumentMouseMove, false );
+		renderer.domElement.addEventListener( 'mousedown', onDocumentMouseDown, false );
+		renderer.domElement.addEventListener( 'mouseup', onDocumentMouseUp, false );
+
+		render();
+	}
+
+	var Colors = ['green','red', 'blue', 'yellow'];
+	function createChessBoard()
+	{
+	}
+
+	var piecesLoaded = false;
+	function waitForPiecesToLoad()
+	{
+	}
+
+	function placePieces()
+	{
+	}
+
+	var PiecesToLoad = ['rook','knight','t','king','queen','t','knight','rook'];
+	function loadPieces()
+	{
+	}
+
+	function loadPiece(modelname,white,index)
+	{
+	}
+
+	function render()
+	{
+		requestAnimationFrame( render );
+		renderer.render( scene, camera );
+	}
+
+	function onDocumentMouseMove( event )
+	{
+	}
+
+	var r, g, b;
+	function onDocumentMouseDown( event )
+	{
+	}
+
+	function onDocumentMouseUp( event )
+	{
+	}
+
+	window.onload = init;
+</script>
+
+</body>
+
+</html>
